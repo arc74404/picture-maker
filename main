@@ -1,0 +1,51 @@
+#include "SFML/Graphics.hpp"
+#include<iostream>
+#include <windows.h>
+using std::cout;
+int grein_maker(sf::Image picture, int x, int y) {
+	int grainscale = 0;
+	int grainscale_first = 0;
+	int grainscale_second = 0;
+	sf::Color color = picture.getPixel(x, y);
+	grainscale_first = 0.3 * color.r + 0.59 * color.g + 0.11 * color.b;
+	color = picture.getPixel(x, y + 1);
+	grainscale_second = 0.3 * color.r + 0.59 * color.g + 0.11 * color.b;
+	grainscale = (grainscale_first + grainscale_second) / 2;
+	return grainscale;
+}
+int main() {
+	std::string my_colors = " .:!/r(l1Z4H9W8$@";//наша палитра
+	const int DEL = 255 / my_colors.size();
+	char symb = '~';
+
+	sf::Image heroimage;
+	heroimage.loadFromFile("C:/Users/Arseniy/Pictures/Acer/misha.jpg");
+
+
+
+	//sf::RenderWindow window(sf::VideoMode(herotexture.getSize().x, herotexture.getSize().y), "window");
+
+	int X = heroimage.getSize().x;
+	int Y = heroimage.getSize().y - 1;
+	HWND console = GetConsoleWindow();
+	MoveWindow(console, 0, 0, heroimage.getSize().x, heroimage.getSize().y, TRUE);
+	int f = 0;
+	std::string ch;
+	for (int i = 0; i < X; ++i) {
+		ch.push_back(' ');
+	}
+	for (int i = 0; i < Y; i += 3) {
+		for (int j = 0; j < X; ++j) {
+			f = grein_maker(heroimage, j, i) / DEL;
+			if (f >= my_colors.size()) {
+				symb = '@';
+			}
+			else {
+				symb = my_colors[f];
+			}
+			ch[j] = symb;
+		}
+		cout << ch << std::endl;
+	}
+	return 0;
+}
